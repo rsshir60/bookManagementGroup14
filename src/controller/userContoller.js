@@ -60,7 +60,35 @@ const createUser = async  (req, res) => {
 
 
 //__login_user
+const loginUser = async function (req,res){
+  try {
+    const email =req.body.email;
+    const password=req.body.password;
+    if(!email){
+      return res.status(400).send({msg:" Email is not present"});
+
+    }
+    if(!password){
+      return res.status(400).send({msg:" password is not present"});
+    }
+    let User=await userModel.findOne({email:email,password:password});
+    if(!User){
+      return res.status(404).send({status:false, msg: "Email or Password is not correct"});
+
+    }
+    let token = jwt.sign({userId:User._id,"iat": (new Date().getTime())
+  },"project3-room14-key",{
+      expiresIn:'1h'
+    });
+    return res.status(200).send({status: true,data: token});
+  } catch (err) {
+    return res.status(500).send({status:false, msg:err.message});
+    
+  }
+}
+
 
 
 
 module.exports.createUser = createUser
+module.exports.loginUser = loginUser
