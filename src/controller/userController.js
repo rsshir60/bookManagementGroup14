@@ -1,7 +1,7 @@
 const userModel = require("../models/userModel");
 const jwt = require("jsonwebtoken")
 
-const {nameValidate, phoneValidate, emailValidate, passValidate} = require("../validations/validators");
+const {nameValidate, phoneValidate, emailValidate, passValidate, isEmpty} = require("../validations/validators");
 
 
 //__create_user
@@ -10,51 +10,57 @@ const createUser = async  (req, res) => {
     let userdata = req.body;
 
     if (Object.keys(userdata) == 0){
-        return res.status(400).send({ status: false, msg: "please provide neccessary details" });
+        return res.status(400).send({ status: false, message: "please provide neccessary details" });
     }
 
     let { title, name, phone, email, password, address } = userdata;
-
+    
     if (!title || !name || !phone || !email || !password){
-      return res.status(400).send({status: false,msg: "title/name/phone/email/password is mandatory",});
+      return res.status(400).send({status: false,message: "title/name/phone/email/password is mandatory",});
     }
+    
+    if(!isEmpty(name)){return res.status(400).send({status:false, message:"enter name properly"})}
 
     if (title !== "Mr" && title !== "Miss" && title !== "Mrs"){
-      return res.status(400).send({ status: false, msg: "title should be in Mr/Mrs/Miss" });
+      return res.status(400).send({ status: false, message: "title should be in Mr/Mrs/Miss" });
     }
 
     if (!nameValidate.test(name)){
-      return res.status(400).send({ status: false, msg: "enter valid name" });
+      return res.status(400).send({ status: false, message: "enter valid name" });
     } 
 
     if (!phoneValidate.test(phone)){
-      return res.status(400).send({ status: false, msg: " enter a valid mobile number" });
+      return res.status(400).send({ status: false, message: " enter a valid mobile number" });
     }
 
     let CheckPhoneInDB = await userModel.findOne({ phone: phone });
     if (CheckPhoneInDB){
-      return res.status(403).send({ status: false, msg: "phone number is already exists" });
+      return res.status(403).send({ status: false, message: "phone number is already exists" });
     }
 
     if (!emailValidate.test(email)){
-      return res.status(400).send({ status: false, msg: "enter a valid email" });
+      return res.status(400).send({ status: false, message: "enter a valid email" });
     }
 
     let checkEmailInDB = await userModel.findOne({ email: email });
     if (checkEmailInDB){
-      return res.status(403).send({ status: false, msg: "email is already exits" });
+      return res.status(403).send({ status: false, message: "email is already exits" });
     }
 
     if(!passValidate.test(password)){
-        return res.status(400).send({status:false, msg:"password must between(8 to 15) and one UPPER case and one lower case"})
+        return res.status(400).send({status:false, message:"password must between(8 to 15) and one UPPER case and one lower case"})
     }
+
+    // if(isEmpty(address.pincode) || address.pincode.length!==6){
+    //   return res.status(400).send({status:false, message:"invalid pincode "})
+    // }
 
     const createdUser = await userModel.create(userdata);
     return res.status(201).send({ status: true, data: createdUser });
 
   } catch (err) {
     console.log("catch err", err);
-    return res.status(500).send({ status: false, msg: err.message });
+    return res.status(500).send({ status: false, message: err.message });
   }
 };
 
@@ -66,25 +72,24 @@ const loginUser = async function (req,res){
     const email =req.body.email;
     const password=req.body.password;
     if(!email){
-      return res.status(400).send({msg:" Email is not present"});
+      return res.status(400).send({message:" Email is not present"});
 
     }
     if(!password){
-      return res.status(400).send({msg:" password is not present"});
+      return res.status(400).send({message:" password is not present"});
     }
     let User=await userModel.findOne({email:email,password:password});
     if(!User){
-      return res.status(404).send({status:false, msg: "Email or Password is not correct"});
+      return res.status(404).send({status:false, message: "email/password not found"});
 
     }
     let token = jwt.sign({userId: User._id,"iat": (new Date().getTime())},
     "project3-room14-key",
     {expiresIn:'1h'});
     
-    //res.setHeader("x-api-token", token);
     return res.status(200).send({status: true,data: token});
   } catch (err) {
-    return res.status(500).send({status:false, msg: err.message});
+    return res.status(500).send({status:false, message: err.message});
     
   }
 }
