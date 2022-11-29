@@ -1,7 +1,8 @@
-const userModel = require("../Models/userModel");
+const userModel = require("../models/userModel");
 const jwt = require("jsonwebtoken")
 
 const {nameValidate, phoneValidate, emailValidate, passValidate} = require("../validations/validators");
+
 
 //__create_user
 const createUser = async  (req, res) => {
@@ -76,18 +77,17 @@ const loginUser = async function (req,res){
       return res.status(404).send({status:false, msg: "Email or Password is not correct"});
 
     }
-    let token = jwt.sign({userId:User._id,"iat": (new Date().getTime())
-  },"project3-room14-key",{
-      expiresIn:'1h'
-    });
+    let token = jwt.sign({userId: User._id,"iat": (new Date().getTime())},
+    "project3-room14-key",
+    {expiresIn:'1h'});
+    
+    //res.setHeader("x-api-token", token);
     return res.status(200).send({status: true,data: token});
   } catch (err) {
-    return res.status(500).send({status:false, msg:err.message});
+    return res.status(500).send({status:false, msg: err.message});
     
   }
 }
-
-
 
 
 module.exports.createUser = createUser
