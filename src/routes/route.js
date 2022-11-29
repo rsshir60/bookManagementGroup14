@@ -15,7 +15,8 @@ router.post('/login',userController.loginUser)
 router.post("/books", authController.authentication ,bookController.createBooks)
 router.get('/books',authController.authentication,bookController.getBooks)
 
-
+//__deleteBook__Api
+router.delete('/books/:bookId',bookController.deleteBook)
 
 
 router.all("/*", (req, res)=>{
