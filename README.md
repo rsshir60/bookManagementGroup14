@@ -76,22 +76,32 @@
 - Create atleast 10 books for each user
 - Return HTTP status 400 for an invalid request with a response body like [this](#error-response-structure)
 
+
+
+
 ### GET /books
 - Returns all books in the collection that aren't deleted. Return only book _id, title, excerpt, userId, category, releasedAt, reviews field. Response example [here](#get-books-response)
 - Return the HTTP status 200 if any documents are found. The response structure should be like [this](#successful-response-structure) 
 - If no documents are found then return an HTTP status 404 with a response like [this](#error-response-structure) 
+
 - Filter books list by applying filters. Query param can have any combination of below filters.
   - By userId
   - By category
   - By subcategory
   example of a query url: books?filtername=filtervalue&f2=fv2
+
 - Return all books sorted by book name in Alphabatical order
+
 
 ### GET /books/:bookId
 - Returns a book with complete details including reviews. Reviews array would be in the form of Array. Response example [here](#book-details-response)
 - Return the HTTP status 200 if any documents are found. The response structure should be like [this](#successful-response-structure) 
 - If the book has no reviews then the response body should include book detail as shown [here](#book-details-response-no-reviews) and an empty array for reviewsData.
 - If no documents are found then return an HTTP status 404 with a response like [this](#error-response-structure) 
+
+
+
+
 
 ### PUT /books/:bookId
 - Update a book by changing its
@@ -104,9 +114,13 @@
 - Return an HTTP status 200 if updated successfully with a body like [this](#successful-response-structure) 
 - Also make sure in the response you return the updated book document. 
 
+
 ### DELETE /books/:bookId
 - Check if the bookId exists and is not deleted. If it does, mark it deleted and return an HTTP status 200 with a response body with status and message.
 - If the book document doesn't exist then return an HTTP status of 404 with a body like [this](#error-response-structure) 
+
+
+
 
 ## Review APIs
 ### POST /books/:bookId/review
@@ -204,6 +218,9 @@ Refer below sample
   "updatedAt": "2021-09-17T04:25:07.803Z",
 }
 ```
+
+
+
 
 ### reviews
 ```yaml
@@ -333,6 +350,8 @@ question:
 
 ### Doubts
 1. iat userlogin ??
+2. releasedAt auto set in book create ?
+
 
 
 

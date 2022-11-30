@@ -1,7 +1,8 @@
 const bookModel = require("../models/booksModel");
 const userModel = require("../models/userModel");
 const mongoose = require('mongoose')
-const { ISBNValidate }  = require('../validations/validators')
+const { ISBNValidate }  = require('../validations/validators');
+const moment = require("moment/moment");
 
 
 //__create_books
@@ -15,9 +16,15 @@ const createBooks = async function (req, res) {
 
         let { title, excerpt, userId, ISBN, category, subcategory, releasedAt  } = input1 
 
-        if (!title || !excerpt || !ISBN || !category || !userId || !subcategory || !releasedAt) {
-            return res.status(400).send({ status: false, msg: "title,excerpt,ISBN, category,subcategory,releasedAt is mandatory" })
-        }
+        //Checking if body entries are present
+        if (!title) { return res.status(400).send({ status: false, msg: "title is mandatory" })}
+        if (!excerpt) { return res.status(400).send({ status: false, msg: "excerpt is mandatory" })}
+        if (!ISBN) { return res.status(400).send({ status: false, msg: "ISBN is mandatory" })}
+        if (!category) { return res.status(400).send({ status: false, msg: "category is mandatory" })}
+        if (!userId) { return res.status(400).send({ status: false, msg: "userId is mandatory" })}
+        if (!subcategory) { return res.status(400).send({ status: false, msg: "subcategory is mandatory" })}
+        if (!releasedAt) { return res.status(400).send({ status: false, msg: "releasedAt is mandatory" })}
+
 
         if (!mongoose.isValidObjectId(userId)) {
             return res.status(400).send({ status: false, message: "invalid userId" })
@@ -25,7 +32,7 @@ const createBooks = async function (req, res) {
 
         let userIdCheck = await userModel.findById({ _id: userId })
         if (!userIdCheck) {
-            return res.status(400).send({ status: false, message: "user not found" })
+            return res.status(400).send({ status: false, message: "userId not found" })
         }
 
         let checktitle = await bookModel.findOne({ title: title })
@@ -42,10 +49,24 @@ const createBooks = async function (req, res) {
             return res.status(400).send({ status: false, message: "ISBN number should be 10 or 13 digit" })
         }
 
+
         let createdBooks = await bookModel.create(input1)
+
+        // const bookData = {
+        //     title,
+        //     excerpt,
+        //     userId,
+        //     ISBN,
+        //     category,
+        //     subcategory,
+        //     releasedAt: moment().format('YYYY-MM-DD')
+        // }
+
+
         return res.status(201).send({ status: true, message: "Success", data: createdBooks })
 
-    } catch (err) {
+    }
+    catch (err) {
         return res.status(500).send({ status: false, message: err.message })
     }
 }
@@ -94,6 +115,8 @@ const getBooks = async function (req, res) {
 // }
 
 
+
+
 //__get_Book_By_Id
 const getBookById = async function (req, res) {
   try {
@@ -129,7 +152,10 @@ const updatedBook = async function (req, res) {
      }
 
     //input validation
-    if(!ISBNValidate.test(ISBN)){ return res.status(400).send({status:false,message:"Please enter valid ISBN."})}
+    if(ISBN){
+        let checkISBN = await bookModel.findOne({ ISBN: ISBN })
+        if (checkISBN) {return res.status(400).send({ status: false, msg: "ISBN already exists" }) } 
+        if(!ISBNValidate.test(ISBN)){ return res.status(400).send({status:false,message:"Please enter valid ISBN."})}    }
 
     //Checking if BlogId to be updated exists
     let checkinputBookId = await bookModel.findById({_id:inputBookId})
@@ -138,9 +164,6 @@ const updatedBook = async function (req, res) {
     //checking if unique entry already exists
     let checktitle = await bookModel.findOne({ title: title })
     if (checktitle) {return res.status(400).send({ status: false, message: "title already exists" }) }
-
-    let checkISBN = await bookModel.findOne({ ISBN: ISBN })
-    if (checkISBN) {return res.status(400).send({ status: false, msg: "ISBN already exists" }) }
 
     // updating books
     let updatedBookData = await bookModel.findOneAndUpdate({ _id: inputBookId, isDeleted: false },
