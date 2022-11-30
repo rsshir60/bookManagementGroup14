@@ -23,7 +23,7 @@ const reviewSchema = new mongoose.Schema(
       required: true,
     },
     review: {
-      type: true, 
+      type: String, 
     },
     isDeleted: {
       type: Boolean,

@@ -181,7 +181,12 @@ Refer below sample
   "createdAt": "2021-09-17T04:25:07.803Z",
   "updatedAt": "2021-09-17T04:25:07.803Z",
 }
-```
+`
+
+
+
+
+``
 ### books
 ```yaml
 {
@@ -323,3 +328,15 @@ Refer below sample
 
 question:
 1. realisedAt in createBook?
+
+
+
+### Doubts
+1. iat userlogin ??
+
+
+
+#extra-validation
+Address validations
+
+user phone num, accepting both string/num

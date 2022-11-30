@@ -14,10 +14,13 @@ const createUser = async  (req, res) => {
     }
 
     let { title, name, phone, email, password, address } = userdata;
-    
-    if (!title || !name || !phone || !email || !password){
-      return res.status(400).send({status: false,message: "title/name/phone/email/password is mandatory",});
-    }
+    //Checking if any field is empty
+    if (!title){ return res.status(400).send({status: false,message: "title is mandatory",}) }
+    if (!name ){ return res.status(400).send({status: false,message: "name is mandatory",}) }
+    if (!phone){ return res.status(400).send({status: false,message: "phone is mandatory",}) }
+    if (!email){ return res.status(400).send({status: false,message: "email is mandatory",}) }
+    if (!password){ return res.status(400).send({status: false,message: "password is mandatory",}) }
+
     
     if(!isEmpty(name)){return res.status(400).send({status:false, message:"enter name properly"})}
 
@@ -35,7 +38,7 @@ const createUser = async  (req, res) => {
 
     let CheckPhoneInDB = await userModel.findOne({ phone: phone });
     if (CheckPhoneInDB){
-      return res.status(403).send({ status: false, message: "phone number is already exists" });
+      return res.status(403).send({ status: false, message: `${phone} number is already exists` });
     }
 
     if (!emailValidate.test(email)){
@@ -54,9 +57,12 @@ const createUser = async  (req, res) => {
     // if(isEmpty(address.pincode) || address.pincode.length!==6){
     //   return res.status(400).send({status:false, message:"invalid pincode "})
     // }
+    
 
     const createdUser = await userModel.create(userdata);
-    return res.status(201).send({ status: true, data: createdUser });
+    //possibility of response structuring........
+
+    return res.status(201).send({ status: true, data: createdUser});
 
   } catch (err) {
     console.log("catch err", err);
@@ -71,26 +77,24 @@ const loginUser = async function (req,res){
   try {
     const email =req.body.email;
     const password=req.body.password;
-    if(!email){
-      return res.status(400).send({message:" Email is not present"});
 
-    }
-    if(!password){
-      return res.status(400).send({message:" password is not present"});
-    }
+    //checking inputs presense
+    if(!email) {return res.status(400).send({message:" Email is not present"}) }
+    if(!password) {return res.status(400).send({message:" password is not present"}) }
+
+    //checking if email/password exists 
     let User=await userModel.findOne({email:email,password:password});
-    if(!User){
-      return res.status(404).send({status:false, message: "email/password not found"});
+    if(!User) {return res.status(404).send({status:false, message: "email/password not found"}) }
 
-    }
+    //token creation
     let token = jwt.sign({userId: User._id,"iat": (new Date().getTime())},
-    "project3-room14-key",
-    {expiresIn:'1h'});
+    "project3-room14-key",  {expiresIn:'1h'});
     
-    return res.status(200).send({status: true,data: token});
-  } catch (err) {
+    return res.status(200).send({status:true, message:"Success", data: token});
+  } 
+
+  catch (err) {
     return res.status(500).send({status:false, message: err.message});
-    
   }
 }
 
