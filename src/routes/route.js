@@ -19,7 +19,9 @@ router.put('/books/:bookId',authController.authentication,bookController.updated
 router.delete('/books/:bookId',authController.authentication,bookController.deleteBook)
 
 //__Review_APIs
-
+router.post('/books/:bookId/review',bookController.updatedReviews)
+router.put('/books/:bookId/review/:reviewId',bookController.updatedReviews)
+router.delete('/books/:bookId/review/:reviewId',bookController.updatedReviews)
 
 
 
