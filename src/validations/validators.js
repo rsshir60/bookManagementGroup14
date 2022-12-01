@@ -21,3 +21,10 @@ exports.isEmpty = function(value){
     if(typeof value ==='string' && value.trim().length ===0)return false
     return true
 }
+
+
+//validation rating range
+exports.ratingRange = function(rating) {
+    if(rating >= 1 && rating <= 5) return true
+    return false;
+    }

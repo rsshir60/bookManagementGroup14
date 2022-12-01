@@ -68,6 +68,9 @@
 - On a successful login attempt return a JWT token contatining the userId, exp, iat. The response should be a JSON object like [this](#successful-response-structure)
 - If the credentials are incorrect return a suitable error message with a valid HTTP status code. The response should be a JSON object like [this](#error-response-structure)
 
+
+
+
 ## Books API
 ### POST /books
 - Create a book document from request body. Get userId in request body only.
@@ -77,47 +80,22 @@
 - Return HTTP status 400 for an invalid request with a response body like [this](#error-response-structure)
 
 
-
-
-
-
-
-
-
-
-
 ### GET /books
 - Returns all books in the collection that aren't deleted. Return only book _id, title, excerpt, userId, category, releasedAt, reviews field. Response example [here](#get-books-response)
-
 - Return the HTTP status 200 if any documents are found. The response structure should be like [this](#successful-response-structure) 
-
 - If no documents are found then return an HTTP status 404 with a response like [this](#error-response-structure) 
-
 - Filter books list by applying filters. Query param can have any combination of below filters.
   - By userId
   - By category
   - By subcategory
   example of a query url: books?filtername=filtervalue&f2=fv2
-
 - Return all books sorted by book name in Alphabatical order
-
-
-
-
-
-
-
-
-
 
 ### GET /books/:bookId
 - Returns a book with complete details including reviews. Reviews array would be in the form of Array. Response example [here](#book-details-response)
 - Return the HTTP status 200 if any documents are found. The response structure should be like [this](#successful-response-structure) 
 - If the book has no reviews then the response body should include book detail as shown [here](#book-details-response-no-reviews) and an empty array for reviewsData.
 - If no documents are found then return an HTTP status 404 with a response like [this](#error-response-structure) 
-
-
-
 
 
 ### PUT /books/:bookId
@@ -139,6 +117,7 @@
 
 
 
+
 ## Review APIs
 ### POST /books/:bookId/review
 - Add a review for the book in reviews collection.
@@ -148,27 +127,20 @@
 - Return the updated book document with reviews data on successful operation. The response body should be in the form of JSON object like [this](#successful-response-structure)
 
 
-
-
 ### PUT /books/:bookId/review/:reviewId
 - Update the review - review, rating, reviewer's name.
-
 - Check if the bookId exists and is not deleted before updating the review. Check if the review exist before updating the review. Send an error response with appropirate status code like [this](#error-response-structure) if the book does not exist
-
 - Get review details like review, rating, reviewer's name in request body.
-
 - Return the updated book document with reviews data on successful operation. The response body should be in the form of JSON object like [this](#book-details-response)
-
-
-
-
-
 
 
 ### DELETE /books/:bookId/review/:reviewId
 - Check if the review exist with the reviewId. Check if the book exist with the bookId. Send an error response with appropirate status code like [this](#error-response-structure) if the book or book review does not exist
 - Delete the related reivew.
 - Update the books document - decrease review count by one
+
+
+
 
 ### Authentication
 - Make sure all the book routes are protected.
@@ -182,6 +154,9 @@
 - Each api should have a new request in this collection
 - Each request in the collection should be rightly named. Eg Create user, Create book, Get books etc
 - Each member of each team should have their tests in running state
+
+
+
 
 Refer below sample
  ![A Postman collection and request sample](assets/Postman-collection-sample.png)
@@ -371,7 +346,6 @@ Refer below sample
 
 
 
-
 question:
 1. realisedAt in createBook?
 
@@ -379,9 +353,13 @@ question:
 
 ### Doubts
 1. iat userlogin ??
-2. In get p
+2. releasedAt auto set in book create ?
 
+api
 
+user/   1. create(gd)        2.login(arti)
+books/ 3.create(akash)         4.get(akash)             5. getbyId(gd)          6.update(authorisation?)(akash)    7.delete(authorisation?)(arti)
+review/ 8. createReview(gd)  9. UpdateReveiw(akash)   10. deleteReview(arti)
 
 
 #extra-validation
