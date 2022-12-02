@@ -23,9 +23,9 @@ router.delete('/books/:bookId',Auth.authentication,bookController.deleteBook)
 
 
 //----------------- Review APIs ----------------------
-router.post('/books/:bookId/review',reviewController.updatedReviews)
+router.post('/books/:bookId/review',reviewController.createdReview)
 router.put('/books/:bookId/review/:reviewId',reviewController.updatedReviews)
-router.delete('/books/:bookId/review/:reviewId',reviewController.updatedReviews)
+router.delete('/books/:bookId/review/:reviewId',reviewController.deleteReview)
 
 
 //------------ incase of wrong path -----------------------

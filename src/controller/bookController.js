@@ -8,6 +8,7 @@ const { ISBNValidate } = require('../validations/validators');
 const createBooks = async function (req, res) {
     try {
         let input1 = req.body
+        const userIdFromToken =  req.decodedToken.userId
         let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = input1
 
         if (Object.keys(input1) == 0) { return res.status(400).send({ status: false, message: "Body can not be empty" }) }
@@ -24,10 +25,17 @@ const createBooks = async function (req, res) {
 
         if (!mongoose.isValidObjectId(userId)) { return res.status(400).send({ status: false, message: "invalid userId" }) }
 
+        if(!mongoose.isValidObjectId(userIdFromToken)){
+            return res.status(400).send({status:false, message:'userId from token is not correct'})
+        }
+
         //Checking for Duplicacy in books DB
 
         let userIdCheck = await userModel.findById({ _id: userId })
         if (!userIdCheck) { return res.status(400).send({ status: false, message: "userId not found" }) }
+
+        if(userIdFromToken != userId ){
+            return res.status(400).send({status:false, message:'you are not authorised to create book with other userId'})}
 
         let checktitle = await bookModel.findOne({ title: title })
         if (checktitle) { return res.status(400).send({ status: false, message: "title is already exists" }) }
@@ -127,11 +135,15 @@ const getBookById = async function (req, res) {
 //------ Update book -----------------
 const updatedBook = async function (req, res) {
     let inputBookId = req.params.bookId
-    // console.log(req.params)
+    const userIdFromToken =  req.decodedToken.userId
     let input1 = req.body
     let { title, exercpt, releasedAt, ISBN } = input1
 
     if (Object.keys(input1) == 0) { return res.status(400).send({ status: false, message: "please enter update in body" }) }
+
+    if(!mongoose.isValidObjectId(userIdFromToken)){
+        return res.status(400).send({status:false, message:'userId from token is not correct'})
+    }
 
     //input validation
     if (ISBN) {
@@ -140,9 +152,13 @@ const updatedBook = async function (req, res) {
         if (!ISBNValidate.test(ISBN)) { return res.status(400).send({ status: false, message: "Please enter valid ISBN." }) }
     }
 
+
     //Checking if BlogId to be updated exists
     let checkinputBookId = await bookModel.findById({ _id: inputBookId })
     if (!checkinputBookId) { return res.status(404).send({ status: false, message: "BookId not found." }) }
+
+    if(userIdFromToken != checkinputBookId.userId ){
+            return res.status(400).send({status:false, message:'you are not authorised to create book with other userId'})}
 
     //checking if unique entry already exists
     let checktitle = await bookModel.findOne({ title: title })
@@ -192,10 +208,6 @@ const deleteBook = async function (req, res) {
 
 
 
-module.exports.createBooks = createBooks
-module.exports.getBooks = getBooks
-module.exports.getBookById = getBookById
-module.exports.updatedBook = updatedBook
-module.exports.deleteBook = deleteBook
 
+module.exports = {createBooks, getBooks, getBookById, updatedBook, deleteBook }
 

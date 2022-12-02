@@ -357,11 +357,6 @@ question:
 
 api
 
-user/   1. create(gd)        2.login(arti)
-books/ 3.create(akash)         4.get(akash)             5. getbyId(gd)          6.update(authorisation?)(akash)    7.delete(authorisation?)(arti)
-review/ 8. createReview(gd)  9. UpdateReveiw(akash)   10. deleteReview(arti)
-
-
 #extra-validation
 Address validations
 

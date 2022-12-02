@@ -135,7 +135,4 @@ const deleteReview = async function (req, res) {
 
 
 
-
-module.exports.createdReview = createdReview
-module.exports.updatedReviews = updatedReviews
-module.exports.deleteReview = deleteReview
+module.exports = {createdReview, updatedReviews, deleteReview}

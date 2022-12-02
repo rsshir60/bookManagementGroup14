@@ -22,15 +22,5 @@ exports.authentication = function (req, res, Next) {
 
 
 
-//__autherization
-
-
-// decodetoken ==>  userId   (logeddin user)
-
-//  params  ==> bookId ==> userId  (books owner)
-
-
-
-
 
 
