@@ -32,6 +32,7 @@ const createdReview = async function (req, res) {
         if (!book){ return res.status(404).send({ status: false, message: "Book not found"}) }
 
         //validation for rating input
+        if (!isEmpty(reviewedBy)) {return res.status(400).send({ status: false, message: "reviewedBy is required" })}
         if (!isEmpty(rating)) {return res.status(400).send({ status: false, message: "rating is required" })}
         if (!ratingRange(rating)) {return res.status(400).send({ status: false, message: 'rating should be in range 1 to 5' }) }
 
