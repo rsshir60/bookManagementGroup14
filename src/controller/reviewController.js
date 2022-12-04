@@ -89,9 +89,10 @@ const updatedReviews = async function (req, res) {
 
         if (!updatedReview) { return res.status(400).send({ status: false, message: "Could not be updated, check your inputs." }) }
 
-
+        //creating object for response with review array
+            const {_id,title,excerpt,userId,ISBN,category,subcategory,reviews,isDeleted,releasedAt,createdAt,updatedAt}=checkBookData
         let obj = {
-            book: checkBookData,
+            _id,title,excerpt,userId,ISBN,category,subcategory,reviews,isDeleted,releasedAt,createdAt,updatedAt,
             reviewsData: updatedReview
         }
 
